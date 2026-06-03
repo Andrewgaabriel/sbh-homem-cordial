@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>O Homem Cordial — Sérgio Buarque × Gilberto Freyre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Spectral:ital,wght@0,300;0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   PALETA — BRASIL MODERNISTA (Tarsila / Raízes do Brasil)
+   ============================================================ */
+:root{
+  --cream:#F3EAD6;        /* fundo pergaminho */
+  --cream-2:#EADDC2;
+  --paper:#FBF5E6;        /* cartões claros */
+  --green-deep:#143D29;   /* verde profundo (capa/encerramento) */
+  --green:#1F6B43;        /* verde tropical estrutural */
+  --green-br:#3E9B5F;     /* verde vivo */
+  --peach:#E7A684;        /* salmão/Tarsila */
+  --terra:#C2632F;        /* terracota */
+  --red:#C5362C;          /* vermelho "Raízes do Brasil" */
+  --gold:#E0A92A;         /* amarelo-ouro */
+  --blue:#9CC4D8;         /* azul claro "O Homem Cordial" */
+  --ink:#23301E;          /* texto escuro (verde-tinta) */
+  --ink-dim:#5E5A45;      /* texto secundário */
+  /* compat. com estilos inline do HTML (não remover) */
+  --rose:#E7A684;
+  --rose-2:#C2632F;
+  --cream-dim:#5E5A45;
+  --berry:#1F6B43;
+  --berry-deep:#143D29;
+  --oxblood:#F3EAD6;
+  --display:'Fraunces', Georgia, serif;
+  --body:'Spectral', Georgia, serif;
+  --slide-pad: clamp(1.4rem, 4.5vw, 5rem);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:var(--body);
+  background:var(--cream);
+  color:var(--ink);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+  position:relative;
+}
+
+/* ---------- atmosfera de fundo (tema claro) ---------- */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(120% 90% at 10% 6%, rgba(31,107,67,.16), transparent 55%),
+    radial-gradient(120% 100% at 92% 92%, rgba(194,99,47,.14), transparent 55%),
+    radial-gradient(90% 90% at 70% 28%, rgba(224,169,42,.10), transparent 60%),
+    var(--cream);
+}
+.blob{position:fixed;border-radius:50%;filter:blur(10px);z-index:0;pointer-events:none;opacity:.3;mix-blend-mode:multiply}
+.blob.b1{width:46vmax;height:46vmax;left:-12vmax;bottom:-16vmax;background:radial-gradient(circle,rgba(31,107,67,.55),transparent 65%);animation:drift1 26s ease-in-out infinite alternate}
+.blob.b2{width:34vmax;height:34vmax;right:-10vmax;top:-12vmax;background:radial-gradient(circle,rgba(231,166,132,.6),transparent 65%);animation:drift2 32s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate(6vmax,-4vmax) scale(1.12)}}
+@keyframes drift2{to{transform:translate(-5vmax,5vmax) scale(1.1)}}
+.grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.05;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* ============================================================
+   ESTRUTURA DOS SLIDES (motions preservados)
+   ============================================================ */
+/* detalhe gráfico orgânico (Tarsila) — bem discreto, nos cantos */
+.deco{position:fixed;z-index:1;pointer-events:none;width:clamp(170px,24vw,400px);opacity:.09;mix-blend-mode:multiply}
+.deco svg{width:100%;height:auto;display:block}
+.deco-tl{top:-3vmax;left:-3vmax;transform:rotate(-4deg)}
+.deco-br{bottom:-4vmax;right:-3vmax;transform:rotate(184deg)}
+@media(max-width:680px){.deco{width:40vw;opacity:.07}}
+
+#deck{position:relative;z-index:2;height:100%;width:100%}
+.slide{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:var(--slide-pad);
+  opacity:0;visibility:hidden;transform:translateY(34px) scale(.99);
+  transition:opacity .65s ease, transform .8s cubic-bezier(.16,.84,.3,1), visibility .65s;
+  pointer-events:none;overflow-y:auto;
+}
+.slide.active{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.slide-inner{width:100%;max-width:1180px;margin:0 auto}
+
+/* slides escuros (capa + encerramento) */
+#s0,#s8{background:linear-gradient(160deg,var(--green-deep),#0C2C1C)}
+
+/* eyebrow / títulos */
+.eyebrow{font-family:var(--body);font-weight:600;letter-spacing:.28em;text-transform:uppercase;
+  font-size:clamp(.66rem,1.5vw,.85rem);color:var(--red);margin-bottom:.9rem}
+h1{font-family:var(--display);font-weight:900;line-height:.98;font-size:clamp(2.8rem,9vw,6.6rem);
+  letter-spacing:-.02em;color:var(--ink)}
+h2{font-family:var(--display);font-weight:900;line-height:1.02;font-size:clamp(2rem,5.4vw,4rem);
+  letter-spacing:-.015em;margin-bottom:.4rem;color:var(--green-deep)}
+.lead{font-size:clamp(1.05rem,2.4vw,1.5rem);color:var(--ink-dim);max-width:46ch;line-height:1.5}
+p{line-height:1.55}
+.hr{height:2px;width:clamp(70px,14vw,150px);background:linear-gradient(90deg,var(--gold),transparent);
+  border:0;margin:1.3rem 0}
+.muted{color:var(--ink-dim)}
+em,.it{font-style:italic}
+strong{color:var(--green-deep);font-weight:600}
+
+/* reveals com stagger (motion) */
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease, transform .8s cubic-bezier(.16,.84,.3,1)}
+.slide.active .reveal{opacity:1;transform:none;transition-delay:var(--d,0s)}
+@media (prefers-reduced-motion: reduce){
+  .slide,.reveal,.blob{transition:none!important;animation:none!important;transform:none!important}
+}
+
+/* ============================================================
+   CAPA
+   ============================================================ */
+#s0 .eyebrow{margin-bottom:1.4rem;color:var(--gold)}
+#s0 h1{color:var(--cream)}
+.cover-grid{display:grid;grid-template-columns:1.55fr .9fr;gap:clamp(1.5rem,4vw,3.5rem);align-items:center}
+.cover-title .sub{font-family:var(--display);font-style:italic;font-weight:500;
+  font-size:clamp(1.15rem,3vw,2rem);color:var(--cream);margin-top:1.2rem;line-height:1.25}
+#s0 .cover-title .sub .muted{color:rgba(243,234,214,.6)}
+.cover-title .tag{margin-top:1.1rem;color:rgba(243,234,214,.82);font-size:clamp(.95rem,2vw,1.2rem);max-width:40ch}
+.byline{margin-top:2rem;color:var(--peach);font-weight:600;letter-spacing:.04em;font-size:clamp(.85rem,1.8vw,1.05rem)}
+.qr-card{justify-self:end;background:var(--cream);color:var(--ink);border-radius:18px;
+  padding:1.1rem 1.1rem 1rem;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.4);
+  transform:rotate(2deg);max-width:280px;border:3px solid var(--gold)}
+.qr-card img{width:100%;max-width:230px;border-radius:8px;display:block;margin:0 auto}
+.qr-card .qr-h{font-family:var(--display);font-weight:600;font-size:1.05rem;margin-bottom:.55rem;color:var(--green)}
+.qr-card .qr-u{margin-top:.6rem;font-size:.74rem;word-break:break-all;color:var(--green-deep);font-family:var(--body)}
+@media(max-width:780px){
+  .cover-grid{grid-template-columns:1fr}
+  .qr-card{justify-self:start;transform:none;margin-top:.5rem}
+}
+
+/* ============================================================
+   TIMELINE (motion preservado)
+   ============================================================ */
+.tl{position:relative;margin-top:1.4rem}
+.tl-line{position:absolute;left:0;right:0;top:9px;height:3px;background:linear-gradient(90deg,var(--green),var(--gold));
+  transform:scaleX(0);transform-origin:left;border-radius:3px}
+.slide.active .tl-line{transform:scaleX(1);transition:transform 1.1s cubic-bezier(.7,0,.2,1) .2s}
+.tl-track{display:flex;justify-content:space-between;gap:.6rem;position:relative}
+.tl-item{flex:1;text-align:center;position:relative;padding-top:0}
+.tl-dot{width:18px;height:18px;border-radius:50%;background:var(--paper);border:3px solid var(--green);
+  margin:0 auto;position:relative;z-index:2;box-shadow:0 0 0 6px rgba(224,169,42,.22)}
+.tl-year{font-family:var(--display);font-weight:900;font-size:clamp(1rem,2.6vw,1.7rem);margin-top:.7rem;color:var(--terra)}
+.tl-label{font-size:clamp(.72rem,1.6vw,.95rem);color:var(--ink-dim);margin-top:.25rem;line-height:1.3}
+.tl-legend{display:flex;gap:1.6rem;flex-wrap:wrap;margin-bottom:.5rem;font-size:.9rem;color:var(--ink-dim)}
+.tl-legend span{display:inline-flex;align-items:center;gap:.45rem}
+.swatch{width:14px;height:14px;border-radius:4px;display:inline-block}
+@media(max-width:680px){
+  .tl-line{left:9px;right:auto;top:0;bottom:0;width:3px;height:auto;transform:scaleY(0);transform-origin:top}
+  .slide.active .tl-line{transform:scaleY(1)}
+  .tl-track{flex-direction:column;gap:1.1rem;padding-left:0}
+  .tl-item{display:grid;grid-template-columns:34px 1fr;text-align:left;align-items:start;gap:.6rem}
+  .tl-dot{margin:.2rem 0 0}
+  .tl-year{margin-top:0}
+}
+
+/* ============================================================
+   CORDIAL ≠ GENTIL (reveal/motion)
+   ============================================================ */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:clamp(1.4rem,4vw,3rem);align-items:center;margin-top:1rem}
+@media(max-width:820px){.two-col{grid-template-columns:1fr;gap:1.6rem}}
+.origin li{list-style:none;margin:.7rem 0;padding-left:1.4rem;position:relative;font-size:clamp(.98rem,2vw,1.2rem)}
+.origin li::before{content:"";position:absolute;left:0;top:.62em;width:.6rem;height:.6rem;border-radius:50%;background:var(--terra)}
+.reveal-card{background:linear-gradient(160deg,var(--green),var(--green-deep));border-radius:20px;
+  padding:clamp(1.4rem,3vw,2.4rem);box-shadow:0 24px 60px rgba(20,61,41,.32);border:1px solid rgba(224,169,42,.35);color:var(--cream)}
+.reveal-card strong{color:var(--gold)}
+.bigword{font-family:var(--display);font-weight:900;font-size:clamp(2.2rem,6vw,4rem);line-height:1.05;letter-spacing:-.02em;color:var(--cream)}
+.strike{position:relative;color:rgba(243,234,214,.55)}
+.strike::after{content:"";position:absolute;left:-4%;right:-4%;top:52%;height:5px;border-radius:3px;background:var(--red);
+  transform:scaleX(0);transform-origin:left}
+.slide.active .strike::after{transform:scaleX(1);transition:transform .6s ease 1s}
+.heart{display:inline-block;color:var(--gold)}
+.slide.active .heart{animation:beat 1.1s ease-in-out 1.4s 2}
+@keyframes beat{0%,100%{transform:scale(1)}25%{transform:scale(1.22)}40%{transform:scale(1)}}
+.etymo{margin-top:1rem;font-size:clamp(1rem,2.3vw,1.4rem);color:var(--cream)}
+
+/* ============================================================
+   ANTÍGONA × CREONTE (balança/motion)
+   ============================================================ */
+.scale-wrap{position:relative;height:clamp(330px,42vh,440px);margin:1.8rem 0 0}
+.beam{position:absolute;top:104px;left:50%;width:min(640px,82%);height:0;border-top:5px solid var(--gold);border-radius:5px;
+  transform:translateX(-50%) rotate(0deg);transform-origin:center;margin:0}
+.slide.active .beam{animation:tilt 1.6s cubic-bezier(.5,0,.2,1) .6s forwards}
+@keyframes tilt{0%{transform:translateX(-50%) rotate(0)}100%{transform:translateX(-50%) rotate(-7deg)}}
+.fulcrum{position:absolute;top:104px;left:50%;transform:translateX(-50%);width:0;height:0;
+  border-left:26px solid transparent;border-right:26px solid transparent;border-bottom:42px solid var(--terra)}
+.pan{position:absolute;top:-8px;width:clamp(168px,24vw,248px);text-align:center}
+.pan .plate{background:linear-gradient(160deg,var(--green),var(--green-deep));border:1px solid rgba(224,169,42,.32);
+  border-radius:16px;padding:1rem 1rem 1.1rem;box-shadow:0 18px 40px rgba(20,61,41,.3);color:var(--cream)}
+.pan.left{left:0;transform:translateX(-50%)}
+.pan.right{right:0;transform:translateX(50%)}
+.pan h3{font-family:var(--display);font-weight:900;font-size:clamp(1.1rem,2.6vw,1.7rem);color:var(--cream)}
+.pan .role{color:var(--gold);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;margin:.2rem 0 .5rem}
+.pan ul{list-style:none;font-size:clamp(.78rem,1.7vw,1rem);color:rgba(243,234,214,.85);line-height:1.5}
+.insight{margin-top:clamp(1.6rem,3vw,2.6rem);text-align:center;font-style:italic;font-size:clamp(1rem,2.4vw,1.45rem);max-width:60ch;margin-inline:auto;color:var(--ink)}
+@media(max-width:820px){
+  .beam,.fulcrum{display:none}
+  .scale-wrap{height:auto;display:flex;flex-direction:column;gap:1rem;align-items:stretch;margin-top:1rem}
+  .pan{position:static!important;transform:none!important;width:auto!important;margin:.4rem 0}
+}
+
+/* ============================================================
+   MAPA MENTAL — CONTRAPONTO (motion preservado)
+   ============================================================ */
+.map{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:clamp(.6rem,2vw,1.6rem);margin-top:1rem}
+.node{border-radius:16px;padding:clamp(1rem,2.4vw,1.6rem);position:relative}
+.node.center{background:var(--paper);color:var(--ink);text-align:center;box-shadow:0 18px 50px rgba(20,61,41,.22);
+  border:2px solid var(--gold)}
+.node.center .nh{font-family:var(--display);font-weight:900;font-size:clamp(1.1rem,2.6vw,1.6rem);color:var(--green)}
+.node.center .ns{font-size:.85rem;color:var(--ink-dim);margin-top:.3rem}
+.node.side{background:linear-gradient(160deg,var(--green),var(--green-deep));border:1px solid rgba(224,169,42,.28);color:var(--cream)}
+.node.side .tag{display:inline-block;font-family:var(--display);font-weight:900;font-size:clamp(1rem,2.4vw,1.5rem);color:var(--gold)}
+.node.side .who{color:var(--peach);font-size:.9rem;font-weight:600;letter-spacing:.05em}
+.node.side ul{list-style:none;margin-top:.6rem;font-size:clamp(.8rem,1.7vw,1.02rem);color:rgba(243,234,214,.85);line-height:1.5}
+.node.side li{margin:.3rem 0;padding-left:1rem;position:relative}
+.node.side li::before{content:"›";position:absolute;left:0;color:var(--gold)}
+.connector{height:3px;background:linear-gradient(90deg,var(--green),var(--gold));transform:scaleX(0);transform-origin:center;border-radius:3px}
+.slide.active .connector{transform:scaleX(1);transition:transform .7s ease .5s}
+.map-foot{margin-top:1.3rem;background:linear-gradient(120deg,var(--green),var(--green-deep));border:1px solid rgba(224,169,42,.3);
+  border-radius:14px;padding:1rem 1.3rem;text-align:center;font-size:clamp(.92rem,2vw,1.2rem);color:var(--cream)}
+.map-foot strong{color:var(--gold)}
+@media(max-width:820px){
+  .map{grid-template-columns:1fr}
+  .connector{height:24px;width:3px;justify-self:center;transform:scaleY(0);transform-origin:top}
+  .slide.active .connector{transform:scaleY(1)}
+}
+
+/* ============================================================
+   PONTOS (democracia racial / economia)
+   ============================================================ */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:clamp(.8rem,2vw,1.3rem);margin-top:1rem}
+@media(max-width:760px){.cards{grid-template-columns:1fr}}
+.card{background:var(--paper);border:1px solid rgba(31,107,67,.16);border-left:4px solid var(--terra);
+  border-radius:14px;padding:1.1rem 1.3rem}
+.card h4{font-family:var(--display);font-weight:600;font-size:clamp(1.05rem,2.3vw,1.4rem);color:var(--green);margin-bottom:.35rem}
+.card p{font-size:clamp(.88rem,1.8vw,1.08rem);color:var(--ink-dim)}
+.econ-row{display:flex;gap:1rem;align-items:flex-start;background:var(--paper);border:1px solid rgba(31,107,67,.16);
+  border-radius:14px;padding:1rem 1.2rem;margin:.6rem 0}
+.econ-row .n{font-family:var(--display);font-weight:900;font-size:clamp(1.3rem,3vw,2rem);color:var(--terra);min-width:1.6ch;line-height:1}
+.econ-row h4{font-family:var(--display);font-weight:600;font-size:clamp(1rem,2.2vw,1.3rem);color:var(--green-deep)}
+.econ-row p{font-size:clamp(.84rem,1.7vw,1.02rem);color:var(--ink-dim);margin-top:.2rem}
+.banner{margin-top:1.1rem;background:linear-gradient(120deg,var(--green),var(--green-deep));border-radius:14px;
+  padding:1rem 1.3rem;font-style:italic;font-size:clamp(.95rem,2vw,1.25rem);border:1px solid rgba(224,169,42,.3);color:var(--cream)}
+
+/* citação flutuante */
+.cite{margin-top:1.3rem;border-left:4px solid var(--gold);padding-left:1rem;font-style:italic;
+  font-size:clamp(1rem,2.2vw,1.35rem);color:var(--ink)}
+.cite .src{display:block;font-style:normal;font-size:.8rem;letter-spacing:.05em;color:var(--red);margin-top:.4rem;text-transform:uppercase}
+
+/* reflexão */
+.q-block{margin:1rem 0;display:flex;gap:1.1rem;align-items:flex-start;background:var(--paper);
+  border:1px solid rgba(31,107,67,.18);border-left:4px solid var(--green);border-radius:16px;padding:clamp(1rem,2.5vw,1.6rem)}
+.q-num{font-family:var(--display);font-weight:900;font-size:clamp(1.8rem,4vw,3rem);color:var(--terra);line-height:1}
+.q-block p{font-size:clamp(1rem,2.2vw,1.4rem);line-height:1.4;color:var(--ink)}
+
+/* encerramento */
+#s8 .quotemark{font-family:var(--display);font-size:clamp(3rem,8vw,6rem);color:var(--peach);line-height:.5;display:block}
+#s8 .closing{font-family:var(--display);font-weight:900;font-size:clamp(1.8rem,5vw,3.6rem);line-height:1.08;max-width:20ch;color:var(--cream)}
+#s8 .lead{color:rgba(243,234,214,.85)}
+#s8 strong{color:var(--peach)}
+.refs{margin-top:1.6rem;font-size:clamp(.78rem,1.6vw,.95rem);color:rgba(243,234,214,.72);line-height:1.7}
+
+/* ============================================================
+   CONTROLES / HUD
+   ============================================================ */
+.progress{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--terra),var(--gold));
+  z-index:30;width:0;transition:width .5s ease}
+.hud{position:fixed;bottom:clamp(.8rem,2.5vw,1.6rem);right:clamp(.8rem,2.5vw,1.6rem);z-index:30;
+  display:flex;align-items:center;gap:.6rem}
+.nav-btn{width:clamp(40px,7vw,52px);height:clamp(40px,7vw,52px);border-radius:50%;border:1px solid var(--green-br);
+  background:rgba(20,61,41,.82);color:var(--cream);font-size:1.3rem;cursor:pointer;backdrop-filter:blur(6px);
+  display:flex;align-items:center;justify-content:center;transition:.25s}
+.nav-btn:hover{background:var(--green);border-color:var(--gold);transform:translateY(-2px)}
+.counter{position:fixed;bottom:clamp(.95rem,2.6vw,1.75rem);left:clamp(.9rem,2.5vw,1.6rem);z-index:30;
+  font-family:var(--display);font-size:clamp(.85rem,1.8vw,1.05rem);color:var(--terra);letter-spacing:.05em}
+.counter b{color:var(--gold);font-weight:900}
+.dots{position:fixed;top:50%;right:clamp(.5rem,1.6vw,1rem);transform:translateY(-50%);z-index:30;
+  display:flex;flex-direction:column;gap:.6rem}
+.dot{width:9px;height:9px;border-radius:50%;background:rgba(95,90,69,.38);border:0;cursor:pointer;padding:0;transition:.25s}
+.dot.on{background:var(--gold);transform:scale(1.5)}
+.hint{position:fixed;bottom:clamp(.95rem,2.6vw,1.75rem);left:50%;transform:translateX(-50%);z-index:30;
+  color:rgba(243,234,214,.85);font-size:.82rem;letter-spacing:.04em;opacity:.85;animation:fade 2.6s ease-in-out infinite}
+@keyframes fade{0%,100%{opacity:.4}50%{opacity:.95}}
+@media(max-width:680px){.dots{display:none}.hint{font-size:.74rem}}
+.arrow-key{display:inline-block;padding:.05em .45em;border:1px solid rgba(243,234,214,.4);border-radius:5px;font-size:.78em}
+
+</style>
+</head>
+<body>
+<div class="bg-mesh"></div>
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="grain"></div>
+<div class="deco deco-tl" aria-hidden="true"><svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg"><path d="M70 410 C50 320 58 250 78 185 C95 130 78 70 108 35 C140 65 128 140 138 205 C148 285 118 340 112 410 Z" fill="#1F6B43"/><path d="M150 410 C138 330 150 270 172 215 C196 158 178 95 206 60 C236 96 222 165 230 235 C238 320 204 360 198 410 Z" fill="#3E9B5F"/><path d="M40 252 C92 240 140 272 200 250 C250 232 272 280 250 300 C198 320 150 300 100 312 C60 322 30 302 40 252 Z" fill="#E7A684"/></svg></div>
+<div class="deco deco-br" aria-hidden="true"><svg viewBox="0 0 300 400" xmlns="http://www.w3.org/2000/svg"><path d="M70 410 C50 320 58 250 78 185 C95 130 78 70 108 35 C140 65 128 140 138 205 C148 285 118 340 112 410 Z" fill="#1F6B43"/><path d="M150 410 C138 330 150 270 172 215 C196 158 178 95 206 60 C236 96 222 165 230 235 C238 320 204 360 198 410 Z" fill="#3E9B5F"/><path d="M40 252 C92 240 140 272 200 250 C250 232 272 280 250 300 C198 320 150 300 100 312 C60 322 30 302 40 252 Z" fill="#E7A684"/></svg></div>
+
+<div class="progress" id="progress"></div>
+
+<main id="deck">
+
+  <!-- ====== 0 · CAPA ====== -->
+  <section class="slide" id="s0">
+    <div class="slide-inner">
+      <div class="cover-grid">
+        <div class="cover-title">
+          <div class="eyebrow reveal" style="--d:.05s">Seminário · Sala de aula invertida · UFFS</div>
+          <h1 class="reveal" style="--d:.15s">O Homem<br>Cordial</h1>
+          <div class="sub reveal" style="--d:.35s">Sérgio Buarque de Holanda <span class="muted">em contraponto a</span> Gilberto Freyre</div>
+          <div class="tag reveal" style="--d:.5s">Herança colonial, público e privado na formação econômica do Brasil.</div>
+          <div class="byline reveal" style="--d:.65s">Andrew &nbsp;&amp;&nbsp; Jocemar &nbsp;·&nbsp; Ciências Econômicas</div>
+        </div>
+        <div class="qr-card reveal" style="--d:.55s">
+          <div class="qr-h">Acompanhe pelo celular</div>
+          <img id="qr" alt="QR code do site" />
+          <div class="qr-u" id="qr-url"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 1 · TIMELINE ====== -->
+  <section class="slide" id="s1">
+    <div class="slide-inner">
+      <div class="eyebrow reveal">Bloco 1 · Os dois autores</div>
+      <h2 class="reveal" style="--d:.1s">Duas vidas, um mesmo objeto</h2>
+      <p class="lead reveal" style="--d:.2s">Dois intérpretes olham para a <em>família patriarcal colonial</em> — e chegam a vereditos opostos.</p>
+      <div class="tl-legend reveal" style="--d:.3s">
+        <span><i class="swatch" style="background:var(--green)"></i> Sérgio Buarque (1902–1982)</span>
+        <span><i class="swatch" style="background:var(--terra)"></i> Gilberto Freyre (1900–1986)</span>
+        <span><i class="swatch" style="background:var(--gold)"></i> O conceito</span>
+      </div>
+      <div class="tl reveal" style="--d:.4s">
+        <div class="tl-line"></div>
+        <div class="tl-track">
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1922</div><div class="tl-label">Modernismo (SBH) · tese de Freyre nos EUA</div></div>
+          <div class="tl-item"><div class="tl-dot" style="border-color:var(--green)"></div><div class="tl-year">1929</div><div class="tl-label">SBH correspondente em Berlim — raiz weberiana</div></div>
+          <div class="tl-item"><div class="tl-dot" style="border-color:var(--gold)"></div><div class="tl-year">1931</div><div class="tl-label">Carta de Ribeiro Couto: nasce o termo "homem cordial"</div></div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1933</div><div class="tl-label">Freyre: <em>Casa-Grande &amp; Senzala</em></div></div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1936</div><div class="tl-label">SBH: <em>Raízes do Brasil</em></div></div>
+          <div class="tl-item"><div class="tl-dot"></div><div class="tl-year">1969</div><div class="tl-label">SBH deixa a USP em protesto contra a ditadura</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 2 · CORDIAL ≠ GENTIL ====== -->
+  <section class="slide" id="s2">
+    <div class="slide-inner">
+      <div class="eyebrow reveal">Bloco 2 · O verdadeiro sentido</div>
+      <h2 class="reveal" style="--d:.1s">A origem — e o que ele <em>não</em> é</h2>
+      <div class="two-col">
+        <div class="reveal" style="--d:.25s">
+          <ul class="origin">
+            <li>O termo <strong>não é</strong> de Sérgio Buarque.</li>
+            <li>Surge numa <strong>carta de Ribeiro Couto a Alfonso Reyes, em 1931</strong>.</li>
+            <li>Em Couto: hospitalidade e confiança, o oposto do "egoísmo do lar fechado".</li>
+            <li>SBH o ressignifica no <strong>cap. 5 de <em>Raízes do Brasil</em></strong> — agora crítico.</li>
+          </ul>
+          <div class="cite">"…daremos ao mundo o homem cordial."
+            <span class="src">Holanda · Raízes do Brasil, p. 176</span></div>
+        </div>
+        <div class="reveal-card reveal" style="--d:.4s">
+          <div class="bigword">cordial <span style="color:var(--rose)">≠</span> <span class="strike">gentil</span></div>
+          <div class="etymo">do latim <em>cor, cordis</em> = <span class="heart">coração</span> = <strong>emoção</strong></div>
+          <p style="margin-top:1rem;color:var(--cream-dim);font-size:clamp(.95rem,2vw,1.18rem)">
+            É o indivíduo que age pelo sentimento, não pela regra — e por isso tanto pode acolher quanto ser <strong>violento</strong>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 3 · ANTÍGONA × CREONTE ====== -->
+  <section class="slide" id="s3">
+    <div class="slide-inner">
+      <div class="eyebrow reveal">Bloco 3 · A raiz do conflito</div>
+      <h2 class="reveal" style="--d:.1s">Antígona × Creonte</h2>
+      <p class="lead reveal" style="--d:.2s">O mito grego para iluminar o choque entre a <em>família</em> e o <em>Estado</em>.</p>
+      <div class="scale-wrap reveal" style="--d:.3s">
+        <div class="beam">
+          <div class="pan left">
+            <div class="plate">
+              <h3>Antígona</h3>
+              <div class="role">A família</div>
+              <ul><li>Laços de sangue e afeto</li><li>Lei privada / "divina"</li><li>O íntimo, a casa</li></ul>
+            </div>
+          </div>
+          <div class="pan right">
+            <div class="plate">
+              <h3>Creonte</h3>
+              <div class="role">O Estado</div>
+              <ul><li>Lei pública e geral</li><li>Impessoalidade</li><li>Vale igual para todos</li></ul>
+            </div>
+          </div>
+        </div>
+        <div class="fulcrum"></div>
+      </div>
+      <div class="insight reveal" style="--d:.5s">No Brasil, a família tende a vencer o Estado: o privado invade o público — e o Estado nasce não da família, mas <strong>contra ela</strong>.</div>
+      <div class="cite reveal" style="--d:.6s">O Estado surge "pela transgressão da ordem doméstica e familiar".
+        <span class="src">Holanda · Raízes do Brasil, p. 169</span></div>
+    </div>
+  </section>
+
+  <!-- ====== 4 · MAPA MENTAL / CONTRAPONTO ====== -->
+  <section class="slide" id="s4">
+    <div class="slide-inner">
+      <div class="eyebrow reveal">Bloco 4 · Núcleo</div>
+      <h2 class="reveal" style="--d:.1s">O grande contraponto</h2>
+      <div class="map">
+        <div class="node side reveal" style="--d:.3s">
+          <span class="who">Sérgio Buarque</span> · <span class="tag">DOENÇA</span>
+          <ul><li>A família patriarcal gera o cordialismo</li><li>Povo sem perfil para o capitalismo</li><li>Barreira ao desenvolvimento</li></ul>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:.8rem">
+          <div class="connector" style="width:100%;min-width:40px"></div>
+          <div class="node center reveal" style="--d:.2s">
+            <div class="nh">Família patriarcal</div>
+            <div class="ns">a mesma base, dois vereditos</div>
+          </div>
+          <div class="connector" style="width:100%;min-width:40px"></div>
+        </div>
+        <div class="node side reveal" style="--d:.4s">
+          <span class="who">Gilberto Freyre</span> · <span class="tag" style="color:var(--rose)">CURA</span>
+          <ul><li>Patriarcalismo = sucesso da colonização</li><li>Casa-grande organiza economia e poder</li><li>Modelo "benéfico" de convivência</li></ul>
+        </div>
+      </div>
+      <div class="map-foot reveal" style="--d:.55s"><strong>O achado do texto:</strong> Freyre nunca escreve "cordial" — mas o cordialismo está lá, no <strong>mandonismo</strong> e na irracionalidade dos senhores.</div>
+      <div class="cite reveal" style="--d:.65s">"Só a casa-grande e a senzala." <span class="src">Freyre · Casa-Grande &amp; Senzala, p. 323</span></div>
+    </div>
+  </section>
+
+  <!-- ====== 5 · DEMOCRACIA RACIAL ====== -->
+  <section class="slide" id="s5">
+    <div class="slide-inner">
+      <div class="eyebrow reveal">Bloco 5 · A máscara cai</div>
+      <h2 class="reveal" style="--d:.1s">O mito da "democracia racial"</h2>
+      <div class="cards">
+        <div class="card reveal" style="--d:.25s"><h4>Falso equilíbrio</h4><p>"Democracia" dá à escravidão uma aparência de igualdade entre senhores e escravizados.</p></div>
+        <div class="card reveal" style="--d:.35s"><h4>Harmonia de fachada</h4><p>A suposta convivência cordial encobre mando, sadismo e o projeto de branqueamento (Bernardino, 2002).</p></div>
+        <div class="card reveal" style="--d:.45s"><h4>Contradição lógica</h4><p>Não há democracia onde existe um lado mandante: a harmonia é forçada, não equilíbrio.</p></div>
+        <div class="card reveal" style="--d:.55s"><h4>Persiste após 1888</h4><p>O trabalho escravo vira assalariado; o negro é excluído e culpabilizado pelo próprio sofrimento.</p></div>
+      </div>
+      <div class="cite reveal" style="--d:.65s">Na vida política, "o mandonismo tem sempre encontrado vítimas".
+        <span class="src">Freyre · Casa-Grande &amp; Senzala, p. 114</span></div>
+    </div>
+  </section>
+
+  <!-- ====== 6 · ECONOMIA ====== -->
+  <section class="slide" id="s6">
+    <div class="slide-inner">
+      <div class="eyebrow reveal">Bloco 6 · Por que importa</div>
+      <h2 class="reveal" style="--d:.1s">Cordialismo é economia institucional</h2>
+      <div class="econ-row reveal" style="--d:.25s"><div class="n">1</div><div><h4>Impessoalidade</h4><p>O mercado moderno exige regra igual para conhecido e estranho. O homem cordial é o oposto: prefere o vínculo pessoal à regra.</p></div></div>
+      <div class="econ-row reveal" style="--d:.35s"><div class="n">2</div><div><h4>Patrimonialismo</h4><p>Quando o privado coloniza o público, cargo e verba viram extensão da "casa" (diálogo com Faoro, <em>Os Donos do Poder</em>).</p></div></div>
+      <div class="econ-row reveal" style="--d:.45s"><div class="n">3</div><div><h4>Instituições &amp; desenvolvimento</h4><p>Instituições impessoais e inclusivas favorecem o crescimento; personalistas e extrativas o travam (North; Acemoglu &amp; Robinson).</p></div></div>
+      <div class="banner reveal" style="--d:.55s">Nossas instituições econômicas carregam o DNA da casa-grande — reconhecer isso é o primeiro passo para reformá-las.</div>
+    </div>
+  </section>
+
+  <!-- ====== 7 · REFLEXÃO ====== -->
+  <section class="slide" id="s7">
+    <div class="slide-inner">
+      <div class="eyebrow reveal">Para refletir · debate</div>
+      <h2 class="reveal" style="--d:.1s">Duas provocações</h2>
+      <div class="q-block reveal" style="--d:.25s">
+        <div class="q-num">1</div>
+        <p>Se o capitalismo exige regras iguais para todos, o <strong>"jeitinho"</strong> torna a economia brasileira mais <em>ineficiente</em> — ou é só o nosso jeito de fazer dar certo?</p>
+      </div>
+      <div class="q-block reveal" style="--d:.4s">
+        <div class="q-num">2</div>
+        <p>Onde a <strong>"casa"</strong> ainda invade o <strong>"Estado"</strong> hoje? (cargo público como herança, verba como favor, empresa que não separa o caixa do dono do caixa do negócio)</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 8 · ENCERRAMENTO ====== -->
+  <section class="slide" id="s8">
+    <div class="slide-inner">
+      <span class="quotemark reveal">“</span>
+      <div class="closing reveal" style="--d:.15s">O homem cordial não é vilão de filme — é a gente, quando o afeto fala mais alto que a regra.</div>
+      <hr class="hr reveal" style="--d:.35s">
+      <p class="lead reveal" style="--d:.45s">Construir o Creonte que o Brasil nunca teve começa por <em>enxergar</em> isso. &nbsp; <strong style="color:var(--rose)">Obrigado — vamos ao debate.</strong></p>
+      <div class="refs reveal" style="--d:.6s">
+        SOUSA NETO, H. M. de. <em>Uma análise do conceito de "homem cordial" na obra Casa-Grande &amp; Senzala</em>. A Economia em Revista, v. 31, n. 2, p. 59-68, 2023.<br>
+        HOLANDA, S. B. de. <em>Raízes do Brasil</em>. São Paulo: Companhia das Letras, 27. ed.<br>
+        FREYRE, G. <em>Casa-Grande &amp; Senzala</em>. São Paulo: Global, 51. ed.
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- HUD -->
+<div class="counter"><b id="cur">01</b> / <span id="tot">09</span></div>
+<div class="dots" id="dots"></div>
+<div class="hud">
+  <button class="nav-btn" id="prev" aria-label="Anterior">‹</button>
+  <button class="nav-btn" id="next" aria-label="Próximo">›</button>
+</div>
+<div class="hint" id="hint">use <span class="arrow-key">←</span> <span class="arrow-key">→</span> ou deslize</div>
+
+<script>
+/* ================================================================
+   CONFIGURAÇÃO — TROQUE A URL DEPOIS DE SUBIR NO VERCEL
+   O QR code é gerado automaticamente a partir deste link.
+   (O QR usa um gerador de imagem externo; se quiser 100% offline,
+    troque o <img id="qr"> por um PNG seu de QR.)
+   ================================================================ */
+const SITE_URL = "https://homem-cordial.vercel.app";
+
+(function(){
+  // gera o QR e mostra a URL
+  const qr = document.getElementById('qr');
+  const qrUrl = document.getElementById('qr-url');
+  qr.src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&qzone=1&data="
+           + encodeURIComponent(SITE_URL) + "&color=143D29&bgcolor=F3EAD6";
+  qrUrl.textContent = SITE_URL.replace(/^https?:\/\//,'');
+
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let idx = 0;
+  document.getElementById('tot').textContent = String(total).padStart(2,'0');
+
+  // dots
+  const dotsWrap = document.getElementById('dots');
+  slides.forEach((_,i)=>{
+    const b=document.createElement('button');
+    b.className='dot'+(i===0?' on':'');
+    b.setAttribute('aria-label','Ir para slide '+(i+1));
+    b.addEventListener('click',()=>go(i));
+    dotsWrap.appendChild(b);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function go(n){
+    n = Math.max(0, Math.min(total-1, n));
+    if(n===idx && slides[idx].classList.contains('active')) {/* still refresh */}
+    slides[idx].classList.remove('active');
+    dots[idx] && dots[idx].classList.remove('on');
+    idx = n;
+    slides[idx].classList.add('active');
+    slides[idx].scrollTop = 0;
+    dots[idx] && dots[idx].classList.add('on');
+    document.getElementById('cur').textContent = String(idx+1).padStart(2,'0');
+    document.getElementById('progress').style.width = ((idx)/(total-1)*100)+'%';
+    if(idx>0){ const h=document.getElementById('hint'); if(h) h.style.display='none'; }
+  }
+  function next(){ go(idx+1); }
+  function prev(){ go(idx-1); }
+
+  document.getElementById('next').addEventListener('click',next);
+  document.getElementById('prev').addEventListener('click',prev);
+
+  // teclado
+  window.addEventListener('keydown',e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){ e.preventDefault(); next(); }
+    else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){ e.preventDefault(); prev(); }
+    else if(e.key==='Home'){ go(0); }
+    else if(e.key==='End'){ go(total-1); }
+  });
+
+  // swipe (ignora gestos verticais quando o slide rola)
+  let tx=0, ty=0;
+  window.addEventListener('touchstart',e=>{ tx=e.changedTouches[0].clientX; ty=e.changedTouches[0].clientY; },{passive:true});
+  window.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.4){ dx<0 ? next() : prev(); }
+  },{passive:true});
+
+  // start
+  go(0);
+})();
+</script>
+</body>
+</html>
